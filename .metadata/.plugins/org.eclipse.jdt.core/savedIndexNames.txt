@@ -14,7 +14,6 @@ INDEX VERSION 1.127+/Users/denic/OneDrive/Study/Semester II/Information Retrieva
 2125161141.index
 1833648217.index
 2123209889.index
-4003507652.index
 3266567714.index
 2337468814.index
 3856011051.index

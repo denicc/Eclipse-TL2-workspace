@@ -31,8 +31,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.FileReader;
 
-
-//This is a change from denicc
 // From chapter 1
 
 /**
