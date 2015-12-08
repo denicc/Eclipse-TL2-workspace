@@ -49,6 +49,7 @@ public class Eval {
 			Map<String, Set<String>> groundtruth) {
 
 		// TODO Hier bitte implementieren und korrekten Wert zurueckgeben.
+		// TODO 8.2 wird mit filename eingelesen
 		return 0D;
 	}
 
