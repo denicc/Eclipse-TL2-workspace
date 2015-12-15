@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.apache.lucene.search.Query"/>
+<fullyQualifiedTypeName name="org.apache.lucene.queryparser.surround.parser.QueryParser"/>
+<fullyQualifiedTypeName name="org.apache.lucene.queryparser.classic.QueryParser"/>
+<fullyQualifiedTypeName name="com.sun.corba.se.impl.util.Version"/>
+</qualifiedTypeNameHistroy>

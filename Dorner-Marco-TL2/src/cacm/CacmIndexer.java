@@ -1,7 +1,14 @@
 package cacm;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -9,6 +16,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 
 //Indexing
 public class CacmIndexer {
@@ -85,13 +96,99 @@ public class CacmIndexer {
 		writer.close(); // 4
 	}
 
+
+	
 	// Do the indexing! (see exercise 4.1)
 	public void indexFile(File file) throws Exception {
 
 		System.out.println("Indexing " + file.getCanonicalPath());
 
+		String path = file.getAbsolutePath();
+		String id="-1";
+		String abst="";
+		String title="";
+		
+		Boolean isTitle = false;
+		Boolean isContent = false;
+		List<String> content = new ArrayList<>();
+		List<Document> docList = new ArrayList<>();
+
+		
+		content = Files.readAllLines(Paths.get(path));
+		
+		for(String line : content){
+			
+			
+			if(!line.startsWith(".")){
+			if (isTitle == true) {
+				title = line;
+				System.out.println(title);
+			}
+			else if (isContent==true){
+				System.out.println(line);
+			}}
+			
+			if (line.startsWith(".I")) {
+				createDoc(id, title, abst);
+				title = "";
+				abst = "";
+				isTitle = false;
+				isContent = false;
+				id = line.substring(1);
+				System.out.println(id);
+				
+			}else if (line.startsWith(".T")) {
+				title = line.substring(1);
+				isTitle = true;	
+				isContent = false;
+				System.out.println(title);
+			}
+		else if (line.startsWith(".W")) {
+			abst = line.substring(1);
+			isContent = true;
+			isTitle = false;
+			System.out.println(abst);
+
+		}	
+		else if(line.startsWith("."))
+		{
+			isTitle = false;
+			isContent = false;
+		}
+			
+		}
+		createDoc(id, title, abst);
+
+		
+		//Document doc = getDocument(file);
+
+		
 		// TODO: hier bitte implementieren! Datei einlesen und einzelne
 		// Dokumente mit den entsprechenden Feldinformationen extrahieren.
+		
+		
+		
+		//writer.addDocument(doc);
 
 	}
+
+	private void createDoc(String id, String title, String abst) {
+		Document doc = new Document();
+		if (!id.equals("-1")) {
+			doc.add(new StringField("id", id, Field.Store.YES));
+			doc.add(new StringField("title", title, Field.Store.YES));
+			doc.add(new TextField("abstract", abst,
+					Field.Store.YES));
+		
+			try {
+				writer.addDocument(doc);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		}
+
+
 }
