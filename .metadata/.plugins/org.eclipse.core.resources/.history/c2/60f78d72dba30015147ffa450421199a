@@ -134,17 +134,17 @@ public class CacmIndexer {
 				abst = "";
 				isTitle = false;
 				isContent = false;
-				id = line.substring(2).trim();
+				id = line.substring(1);
 				System.out.println(id);
 				
 			}else if (line.startsWith(".T")) {
-				title = line.substring(2).trim();				
+				title = line.substring(1);
 				isTitle = true;	
 				isContent = false;
 				System.out.println(title);
 			}
 		else if (line.startsWith(".W")) {
-			abst = line.substring(2).trim();
+			abst = line.substring(1);
 			isContent = true;
 			isTitle = false;
 			System.out.println(abst);

@@ -144,7 +144,7 @@ public class CacmIndexer {
 				System.out.println(title);
 			}
 		else if (line.startsWith(".W")) {
-			abst = line.substring(2).trim();
+			abst = line.substring(2);
 			isContent = true;
 			isTitle = false;
 			System.out.println(abst);

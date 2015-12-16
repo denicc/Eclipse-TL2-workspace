@@ -4,4 +4,14 @@
 <fullyQualifiedTypeName name="org.apache.lucene.queryparser.surround.parser.QueryParser"/>
 <fullyQualifiedTypeName name="org.apache.lucene.queryparser.classic.QueryParser"/>
 <fullyQualifiedTypeName name="com.sun.corba.se.impl.util.Version"/>
+<fullyQualifiedTypeName name="java.util.stream.Collectors"/>
+<fullyQualifiedTypeName name="com.sun.xml.internal.bind.v2.schemagen.xmlschema.List"/>
+<fullyQualifiedTypeName name="java.util.stream.Stream"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.nio.file.Files"/>
+<fullyQualifiedTypeName name="java.nio.file.Paths"/>
+<fullyQualifiedTypeName name="org.apache.lucene.document.Document"/>
+<fullyQualifiedTypeName name="org.apache.lucene.document.Field.Store"/>
+<fullyQualifiedTypeName name="org.apache.lucene.document.TextField"/>
 </qualifiedTypeNameHistroy>
