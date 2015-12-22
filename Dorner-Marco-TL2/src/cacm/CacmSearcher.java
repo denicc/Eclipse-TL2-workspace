@@ -7,12 +7,21 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.search.similarities.LMDirichletSimilarity;
 import org.apache.lucene.search.similarities.LMJelinekMercerSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.store.FSDirectory;
 
 public class CacmSearcher {
 
@@ -62,11 +71,36 @@ public class CacmSearcher {
 	public static StringBuilder search(String indexDir, Similarity sim,
 			Analyzer analyzer) throws IOException, ParseException {
 
+		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(
+				indexDir).toPath()));
+		IndexSearcher is = new IndexSearcher(reader);
+		
+		QueryParser parser = new QueryParser("contents", // 4
+				new StandardAnalyzer()); // 4
+		
 		// read the query texts
 		List<TestQuery> queryList = CacmHelper.readQueries(path2queries);
 		System.out.println("#queries: " + queryList.size());
+		
+		Query query = parser.parse(queryList.get(200).getText()); // 4
+		long start = System.currentTimeMillis();
+		TopDocs hits = is.search(query, 1); // 5
+		long end = System.currentTimeMillis();
 
+		//Suche auf .T und .W
+		
 		StringBuilder builder = null;
+		
+		System.err.println("Found " + hits.totalHits + // 6
+				" document(s) (in " + (end - start) + // 6
+				" milliseconds) that matched query '" + // 6
+				query + "':"); // 6
+
+		for (ScoreDoc scoreDoc : hits.scoreDocs) {
+			Document doc = is.doc(scoreDoc.doc); // 7
+			System.out.println(doc.get("fullpath")); // 8
+		}
+		
 		
 		// TODO ab hier bitte implementieren!
 		

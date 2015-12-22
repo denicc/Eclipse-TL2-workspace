@@ -3,6 +3,7 @@ package cacm;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -122,10 +123,11 @@ public class CacmIndexer {
 			if(!line.startsWith(".")){
 			if (isTitle == true) {
 				title = line;
-				System.out.println(title);
+				//System.out.println(title);
 			}
 			else if (isContent==true){
-				System.out.println(line);
+				abst += line;
+				//System.out.println(line);
 			}}
 			
 			if (line.startsWith(".I")) {
@@ -135,16 +137,17 @@ public class CacmIndexer {
 				isTitle = false;
 				isContent = false;
 				id = line.substring(2).trim();
-				System.out.println(id);
+				//System.out.println(id);
 				
 			}else if (line.startsWith(".T")) {
 				title = line.substring(2).trim();				
 				isTitle = true;	
 				isContent = false;
-				System.out.println(title);
+				//System.out.println(title);
 			}
 		else if (line.startsWith(".W")) {
 			abst = line.substring(2).trim();
+			
 			isContent = true;
 			isTitle = false;
 			System.out.println(abst);
@@ -155,7 +158,7 @@ public class CacmIndexer {
 			isTitle = false;
 			isContent = false;
 		}
-			
+
 		}
 		createDoc(id, title, abst);
 
@@ -174,11 +177,12 @@ public class CacmIndexer {
 
 	private void createDoc(String id, String title, String abst) {
 		Document doc = new Document();
+		System.out.println(abst);
 		if (!id.equals("-1")) {
-			doc.add(new StringField("id", id, Field.Store.YES));
-			doc.add(new StringField("title", title, Field.Store.YES));
-			doc.add(new TextField("abstract", abst,
-					Field.Store.YES));
+			
+			doc.add(new StringField(ID, id, Field.Store.YES));
+			doc.add(new TextField(CONTENT, new StringReader(abst)));
+			doc.add(new TextField(TITLE, new StringReader(title)));
 		
 			try {
 				writer.addDocument(doc);
