@@ -22,9 +22,7 @@ import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.search.similarities.LMDirichletSimilarity;
 import org.apache.lucene.search.similarities.LMJelinekMercerSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
-import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 
 
 public class CacmSearcher {
@@ -99,12 +97,15 @@ public class CacmSearcher {
 					" milliseconds) that matched query '" + // 6
 					singleQuery.getText() + "':"); // 6
 
+			int rank=1;
 			for (ScoreDoc scoreDoc : hits.scoreDocs) {
 				Document doc = is.doc(scoreDoc.doc); // 7
-				System.out.println(singleQuery.getNumber() + " 1 " + doc.get("docid") + " " + scoreDoc.score); // 8
+				String returnString=singleQuery.getNumber() + " 1 " + doc.get("docid") +" "+rank+ " " + scoreDoc.score+" "+sim.toString();
+				System.out.println(returnString); // 8
 				// TODO muss hier in File gechrieben werden!
 				
-				builder.append("TODO");
+				rank++;
+				builder.append(returnString);
 			}
 
 		}

@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -40,7 +38,7 @@ public class CacmIndexer {
 	public IndexWriter writer;
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = true;
+	public static final boolean USE_STANDARD_ANALYZER = false;
 
 	// constructor
 	public CacmIndexer(String indexDir, Analyzer analyzer) throws IOException {
@@ -79,8 +77,7 @@ public class CacmIndexer {
 		}
 		long end = System.currentTimeMillis();
 
-		System.out.println("Indexing " + numIndexed + " files took "
-				+ (end - start) + " milliseconds");
+		System.out.println("Indexing " + numIndexed + " files took " + (end - start) + " milliseconds");
 	}
 
 	// as before, nothing new :-)
@@ -97,39 +94,35 @@ public class CacmIndexer {
 		writer.close(); // 4
 	}
 
-
-	
 	// Do the indexing! (see exercise 4.1)
 	public void indexFile(File file) throws Exception {
 
 		System.out.println("Indexing " + file.getCanonicalPath());
 
 		String path = file.getAbsolutePath();
-		String id="-1";
-		String abst="";
-		String title="";
-		
+		String id = "-1";
+		String abst = "";
+		String title = "";
+
 		Boolean isTitle = false;
 		Boolean isContent = false;
 		List<String> content = new ArrayList<>();
 		List<Document> docList = new ArrayList<>();
 
-		
 		content = Files.readAllLines(Paths.get(path));
-		
-		for(String line : content){
-			
-			
-			if(!line.startsWith(".")){
-			if (isTitle == true) {
-				title = line;
-				//System.out.println(title);
+
+		for (String line : content) {
+
+			if (!line.startsWith(".")) {
+				if (isTitle == true) {
+					title = line;
+					// System.out.println(title);
+				} else if (isContent == true) {
+					abst += line;
+					// System.out.println(line);
+				}
 			}
-			else if (isContent==true){
-				abst += line;
-				//System.out.println(line);
-			}}
-			
+
 			if (line.startsWith(".I")) {
 				createDoc(id, title, abst);
 				title = "";
@@ -137,41 +130,34 @@ public class CacmIndexer {
 				isTitle = false;
 				isContent = false;
 				id = line.substring(2).trim();
-				//System.out.println(id);
-				
-			}else if (line.startsWith(".T")) {
-				title = line.substring(2).trim();				
-				isTitle = true;	
-				isContent = false;
-				//System.out.println(title);
-			}
-		else if (line.startsWith(".W")) {
-			abst = line.substring(2).trim();
-			
-			isContent = true;
-			isTitle = false;
-			System.out.println(abst);
+				// System.out.println(id);
 
-		}	
-		else if(line.startsWith("."))
-		{
-			isTitle = false;
-			isContent = false;
-		}
+			} else if (line.startsWith(".T")) {
+				title = line.substring(2).trim();
+				isTitle = true;
+				isContent = false;
+				// System.out.println(title);
+			} else if (line.startsWith(".W")) {
+				abst = line.substring(2).trim();
+
+				isContent = true;
+				isTitle = false;
+				System.out.println(abst);
+
+			} else if (line.startsWith(".")) {
+				isTitle = false;
+				isContent = false;
+			}
 
 		}
 		createDoc(id, title, abst);
 
-		
-		//Document doc = getDocument(file);
+		// Document doc = getDocument(file);
 
-		
 		// TODO: hier bitte implementieren! Datei einlesen und einzelne
 		// Dokumente mit den entsprechenden Feldinformationen extrahieren.
-		
-		
-		
-		//writer.addDocument(doc);
+
+		// writer.addDocument(doc);
 
 	}
 
@@ -179,11 +165,11 @@ public class CacmIndexer {
 		Document doc = new Document();
 		System.out.println(abst);
 		if (!id.equals("-1")) {
-			
+
 			doc.add(new StringField(ID, id, Field.Store.YES));
 			doc.add(new TextField(CONTENT, new StringReader(abst)));
 			doc.add(new TextField(TITLE, new StringReader(title)));
-		
+
 			try {
 				writer.addDocument(doc);
 			} catch (IOException e) {
@@ -191,8 +177,7 @@ public class CacmIndexer {
 				e.printStackTrace();
 			}
 		}
-		
-		}
 
+	}
 
 }
