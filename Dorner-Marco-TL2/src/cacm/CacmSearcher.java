@@ -26,6 +26,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+
 public class CacmSearcher {
 
 	// determines which analyzer should be used
@@ -69,17 +70,18 @@ public class CacmSearcher {
 	public static StringBuilder search(String indexDir, Similarity sim, Analyzer analyzer)
 			throws IOException, ParseException {
 
+		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(
+				indexDir).toPath()));
+		IndexSearcher is = new IndexSearcher(reader);
+		
+		
 		// read the query texts
 		List<TestQuery> queryList = CacmHelper.readQueries(path2queries);
 		System.out.println("#queries: " + queryList.size());
-
-		StringBuilder builder = new StringBuilder();
 		
 
+		StringBuilder builder = new StringBuilder();
 
-		// TODO ab hier bitte implementieren!
-		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(indexDir).toPath()));
-		IndexSearcher is = new IndexSearcher(reader);
 
 		String fields[] = { "content", "title" };
 
