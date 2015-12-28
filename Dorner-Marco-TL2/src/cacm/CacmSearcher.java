@@ -57,8 +57,8 @@ public class CacmSearcher {
 		for (int i = 0; i < sims.length; i++) {
 			Similarity sim = sims[i];
 			StringBuilder builder = search(indexDir, sim, analyzer);
-			System.err.println("cacm-" + sim.toString() + "-" + analyzer.toString() + ".trec");
-			FileWriter fw = new FileWriter(new File("logs/cacm-" + sim.toString() + "-" + outName + ".trec"));
+			System.err.println("cacm-" + sim.toString().replaceAll("\\s+","") + "-" + analyzer.toString() + ".trec");
+			FileWriter fw = new FileWriter(new File("logs/cacm-" + sim.toString().replaceAll("\\s+","") + "-" + outName + ".trec"));
 			fw.write(builder.toString());
 			fw.close();
 		}
@@ -100,7 +100,7 @@ public class CacmSearcher {
 			int rank=1;
 			for (ScoreDoc scoreDoc : hits.scoreDocs) {
 				Document doc = is.doc(scoreDoc.doc); // 7
-				String returnString=singleQuery.getNumber() + " 1 " + doc.get("docid") +" "+rank+ " " + scoreDoc.score+" "+sim.toString();
+				String returnString=singleQuery.getNumber() + " 1 " + doc.get("docid") +" "+rank+ " " + scoreDoc.score+" "+sim.toString().replaceAll("\\s+","");
 				System.out.println(returnString); // 8		
 				rank++;
 				builder.append(returnString+"\n");
