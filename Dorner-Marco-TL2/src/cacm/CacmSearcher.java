@@ -71,6 +71,7 @@ public class CacmSearcher {
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(
 				indexDir).toPath()));
 		IndexSearcher is = new IndexSearcher(reader);
+		is.setSimilarity(sim);
 		
 		
 		// read the query texts
@@ -91,12 +92,10 @@ public class CacmSearcher {
 			long start = System.currentTimeMillis();
 			TopDocs hits = is.search(query, 1000); // 5
 			long end = System.currentTimeMillis();
-
 			System.err.println("Found " + hits.totalHits + // 6
 					" document(s) (in " + (end - start) + // 6
 					" milliseconds) that matched query '" + // 6
 					singleQuery.getText() + "':"); // 6
-
 			int rank=1;
 			for (ScoreDoc scoreDoc : hits.scoreDocs) {
 				Document doc = is.doc(scoreDoc.doc); // 7
