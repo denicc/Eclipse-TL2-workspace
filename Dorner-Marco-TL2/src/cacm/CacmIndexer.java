@@ -152,18 +152,10 @@ public class CacmIndexer {
 		}
 		createDoc(id, title, abst);
 
-		// Document doc = getDocument(file);
-
-		// TODO: hier bitte implementieren! Datei einlesen und einzelne
-		// Dokumente mit den entsprechenden Feldinformationen extrahieren.
-
-		// writer.addDocument(doc);
-
 	}
 
 	private void createDoc(String id, String title, String abst) {
 		Document doc = new Document();
-		System.out.println(abst);
 		if (!id.equals("-1")) {
 
 			doc.add(new StringField(ID, id, Field.Store.YES));

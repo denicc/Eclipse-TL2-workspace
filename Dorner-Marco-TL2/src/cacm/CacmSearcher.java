@@ -101,7 +101,7 @@ public class CacmSearcher {
 			for (ScoreDoc scoreDoc : hits.scoreDocs) {
 				Document doc = is.doc(scoreDoc.doc); // 7
 				String returnString=singleQuery.getNumber() + " 1 " + doc.get("docid") +" "+rank+ " " + scoreDoc.score+" "+sim.toString();
-				//System.out.println(returnString); // 8		
+				System.out.println(returnString); // 8		
 				rank++;
 				builder.append(returnString+"\n");
 			}
