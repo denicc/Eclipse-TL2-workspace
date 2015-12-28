@@ -142,7 +142,7 @@ public class CacmIndexer {
 
 				isContent = true;
 				isTitle = false;
-				System.out.println(abst);
+				//System.out.println(abst);
 
 			} else if (line.startsWith(".")) {
 				isTitle = false;
