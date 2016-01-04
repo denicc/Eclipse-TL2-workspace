@@ -38,7 +38,9 @@ public class CacmIndexer {
 	public IndexWriter writer;
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = false;
+	public static final boolean USE_STANDARD_ANALYZER = true;
+	
+	public static int documentCount = 0;
 
 	// constructor
 	public CacmIndexer(String indexDir, Analyzer analyzer) throws IOException {
@@ -164,6 +166,7 @@ public class CacmIndexer {
 
 			try {
 				writer.addDocument(doc);
+				documentCount++;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cacm.CacmIndexer;
+
 class TRECFileFilter implements FilenameFilter {
 	public boolean accept(File dir, String name) {
 		String lowercaseName = name.toLowerCase();
@@ -32,11 +34,10 @@ public class Eval {
 	 */
 	public static void main(String[] args) {
 
-		// key: Anfrage; value: Menge der relevanten DokumentIDs
-		Map<String, Set<String>> groundtruth = readGroundtruth("data/cacm-new-63.qrel");
-
 		String[] filenames = new File("./logs").list(new TRECFileFilter());
 		for (String filename : filenames) {
+			// key: Anfrage; value: Menge der relevanten DokumentIDs
+			Map<String, Set<String>> groundtruth = readGroundtruth("data/cacm-new-63.qrel");
 			double map = evaluateMAP("./logs/" + filename, groundtruth);
 			System.out.println(filename + "\t MAP=" + Math.round(map * 1000.0) / 1000.0);
 		}
@@ -61,7 +62,10 @@ public class Eval {
 		String queryId = "-1";
 		String docId = "-1";
 		String rank = "-1";
-		for (String line : lines) {
+		Set<String> truth = groundtruth.get(lastQueryId);
+
+		for (int index = 0; index < lines.size(); index++) {
+			String line = lines.get(index);
 			String[] parts = line.split(" ");
 			if (parts.length != 6)
 				throw new RuntimeException("Fehler" + parts.length);
@@ -69,39 +73,28 @@ public class Eval {
 			queryId = parts[0];
 			docId = parts[2];
 			rank = parts[3];
-			Set<String> truth = groundtruth.get(lastQueryId);
 
-			if (truth != null) {
-
-				// Prüfe, ob bereits alle nötigen Dokumente gefunden sind und
-				// die
-				// Query noch die selbe ist
-				if (lastQueryId.equals(queryId)) {
-					if (truth.contains(docId)) {
-						recall.add(Double.parseDouble(rank));
-						//System.out.println("Found @: "+rank);
-
-					}
-				} else {
+			//Prüfe ob queryId sich geändert hat -> ap berechnen
+			if (!lastQueryId.equals(queryId)) {
+				if (truth != null) {
 					// AP berechnen
-					double ap = 0D;
-					int i = 0;
-					if (recall.size() > 0){
-					for (double pos : recall) {
-						ap += (1+i)/pos;
-						i++;
-					}
-					ap = ap / recall.size();
-					System.out.println("AP "+ap);
+					double ap = calculateAP(recall, truth.size());
 					averagePrecision.add(ap);
-
-					// liste leeren
-					recall.clear();
-					}
 				}
+				recall.clear();
+				truth = groundtruth.get(queryId);
 			}
-
+			if (truth != null && truth.contains(docId)) {
+				recall.add(Double.parseDouble(rank));
+				truth.remove(docId);
+			}
 			lastQueryId = queryId;
+		}
+		if (truth != null) {
+			// Berechne AP für die letzte QueryId
+			double ap = calculateAP(recall, truth.size());
+			averagePrecision.add(ap);
+			recall.clear();
 		}
 		double map = 0D;
 		for (double ap : averagePrecision) {
@@ -109,6 +102,33 @@ public class Eval {
 		}
 		map = map / averagePrecision.size();
 		return map;
+	}
+
+	private static double calculateAP(List<Double> recall, int missingRelevantDocuments) {
+		double ap = 0D;
+		int i = 0;
+		if (recall.size() > 0) {
+			for (double pos : recall) {
+				ap += (1 + i) / pos;
+				i++;
+			}
+			// TODO auf diesen Wert kann nicht zugegriffen werden, da anderer
+			// Prozess...
+			if (CacmIndexer.documentCount > 0) {
+				for (int j = 0; j < missingRelevantDocuments; j++) {
+					// TODO nochmal anschaun, der Nenner stimmt so vermutlich
+					// nicht.
+					ap += 1000 / CacmIndexer.documentCount;
+
+				}
+			} else {
+				// System.err.println("Kollektionsgroeße konnte nicht ausgelesen
+				// werden.");
+			}
+			ap = ap / recall.size();
+
+		}
+		return ap;
 	}
 
 	/*
