@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cacm.CacmIndexer;
-
 class TRECFileFilter implements FilenameFilter {
 	public boolean accept(File dir, String name) {
 		String lowercaseName = name.toLowerCase();
@@ -74,7 +72,7 @@ public class Eval {
 			docId = parts[2];
 			rank = parts[3];
 
-			//Prüfe ob queryId sich geändert hat -> ap berechnen
+			// Pruefe ob queryId sich geaendert hat -> ap berechnen
 			if (!lastQueryId.equals(queryId)) {
 				if (truth != null) {
 					// AP berechnen
@@ -91,7 +89,7 @@ public class Eval {
 			lastQueryId = queryId;
 		}
 		if (truth != null) {
-			// Berechne AP für die letzte QueryId
+			// Berechne AP fuer die letzte QueryId
 			double ap = calculateAP(recall, truth.size());
 			averagePrecision.add(ap);
 			recall.clear();
@@ -112,19 +110,9 @@ public class Eval {
 				ap += (1 + i) / pos;
 				i++;
 			}
-			// TODO auf diesen Wert kann nicht zugegriffen werden, da anderer
-			// Prozess...
-			if (CacmIndexer.documentCount > 0) {
-				for (int j = 0; j < missingRelevantDocuments; j++) {
-					// TODO nochmal anschaun, der Nenner stimmt so vermutlich
-					// nicht.
-					ap += 1000 / CacmIndexer.documentCount;
+			// Elemente die nicht gefunden werden, werden mit dem N�herungswert
+			// 0 einbezogen.
 
-				}
-			} else {
-				// System.err.println("Kollektionsgroeße konnte nicht ausgelesen
-				// werden.");
-			}
 			ap = ap / recall.size();
 
 		}

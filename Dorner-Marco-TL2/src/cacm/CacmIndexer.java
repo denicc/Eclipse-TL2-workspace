@@ -1,7 +1,6 @@
 package cacm;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -11,14 +10,14 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 //Indexing
 public class CacmIndexer {
@@ -39,7 +38,7 @@ public class CacmIndexer {
 
 	// determines which analyzer should be used
 	public static final boolean USE_STANDARD_ANALYZER = true;
-	
+
 	public static int documentCount = 0;
 
 	// constructor
@@ -117,10 +116,9 @@ public class CacmIndexer {
 
 			if (!line.startsWith(".")) {
 				if (isTitle == true) {
-					title = line;
-					// System.out.println(title);
+					title += line;
 				} else if (isContent == true) {
-					abst += line;
+					abst += " " + line;
 					// System.out.println(line);
 				}
 			}
@@ -144,7 +142,7 @@ public class CacmIndexer {
 
 				isContent = true;
 				isTitle = false;
-				//System.out.println(abst);
+				// System.out.println(abst);
 
 			} else if (line.startsWith(".")) {
 				isTitle = false;
