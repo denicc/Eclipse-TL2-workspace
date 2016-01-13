@@ -28,7 +28,7 @@ import org.apache.lucene.store.FSDirectory;
 public class CacmSearcher {
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = true;
+	public static final boolean USE_STANDARD_ANALYZER = false;
 
 	public static String path2queries = "data/cacm.query.xml";
 

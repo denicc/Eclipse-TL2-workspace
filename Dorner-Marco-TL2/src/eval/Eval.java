@@ -111,11 +111,12 @@ public class Eval {
 				i++;
 			}
 			// Elemente die nicht gefunden werden, werden mit dem Näherungswert
-			// 0 einbezogen.
+			// 0 gewertets.
 
 			ap = ap / recall.size();
 
 		}
+		System.out.println("AP: "+ap);
 		return ap;
 	}
 
