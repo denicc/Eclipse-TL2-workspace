@@ -110,13 +110,11 @@ public class Eval {
 				ap += (1 + i) / pos;
 				i++;
 			}
-			// Elemente die nicht gefunden werden, werden mit dem Näherungswert
-			// 0 gewertets.
-
-			ap = ap / recall.size();
+			// Elemente die nicht gefunden werden, werden mit dem Naeherungswert
+			// 0 gewertet.
+			ap = ap / (recall.size()+missingRelevantDocuments);
 
 		}
-		System.out.println("AP: "+ap);
 		return ap;
 	}
 
